@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>id search</title>
+  <style>
+  .idtable-container {
+    border: 1px solid gray;
+    border-radius: 3px;
+    width: 400px;
+    height: 400px;
+    overflow-y: auto;
+    margin-top: 4px;
+    padding: 2px;
+  }
+
+  .taken {
+    background-color: lightgray;
+  }
+  .hidden {
+    display: none;
+  }
+  </style>
+</head>
+
+<body>
+  <input
+   id="searchbar"
+   placeholder="Search IDs"
+  >
+  <span id="search-activity" class="">Loading...</span>
+  <div class="idtable-container">
+    <div class="idtable" id="idtable">
+    </div>
+  </div>
+
+  <script>
+
+function debounce(fn, t) {
+  let tt = null
+  return function(e) {
+    clearTimeout(tt)
+    tt = setTimeout(() => fn(e), t)
+  }
+}
+
+window.addEventListener('load', function(e) {
+  const activity = document.getElementById('search-activity')
+  const idtable = document.getElementById('idtable')
+  const data = {
+    1: 'lalaabop',
+    13: 'lizcuits',
+  }
+  
+  renderIds(idtable, data)
+  activity.setAttribute('class', 'hidden')
+  
+  const sb = document.getElementById('searchbar')
+  sb.addEventListener('input', debounce(function(e) {
+    activity.setAttribute('class', '')
+    setTimeout(function() {
+      renderIds(idtable, data, e.target.value)
+      activity.setAttribute('class', 'hidden')
+    })
+  }, 500))
+})
+
+function renderIds(div, data, filter) {
+  let t = []
+  filter
+  for (let i = 1; i <= 242143; i++) {
+    if (filter && !(''+i).includes(filter)) {
+      continue;
+    }
+    if (data[i]) {
+      t.push('<div class="taken">' + i + '</div>')
+    } else {
+      t.push('<div>' + i + '</div>')
+    }
+    
+  }
+  div.innerHTML = t.join('\n')
+}
+
+  </script>
+
+</body>
+</html>
