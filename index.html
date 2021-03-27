@@ -25,10 +25,24 @@
 </head>
 
 <body>
+  <h3>ID Searcher by zoo.</h3>
+  <div style="width: 400px; margin-bottom: 1em">
+    My switch keychain can be customized to store
+    an ID from 1 up to 242143. The keychain connects to a device
+    containing a directory of friends and their IDs.
+    This ID searcher is made to help friends find
+    an available ID number. I will periodically update
+    this page to gray out claimed numbers.
+  </div>
   <input
-   id="searchbar"
-   placeholder="Search IDs"
+         id="searchbar"
+         placeholder="Search IDs"
+         type="text"
   >
+  <label for="filter">Show Claimed Only</label>
+  <input id="filter"
+         type="checkbox">
+
   <span id="search-activity" class="">Loading...</span>
   <div class="idtable-container">
     <div class="idtable" id="idtable">
@@ -48,34 +62,43 @@ function debounce(fn, t) {
 window.addEventListener('load', function(e) {
   const activity = document.getElementById('search-activity')
   const idtable = document.getElementById('idtable')
+  const filter = document.getElementById('filter')
   const data = {
     1: 'lalaabop',
     13: 'lizcuits',
   }
   
-  renderIds(idtable, data)
+  renderIds(idtable, data, filter)
   activity.setAttribute('class', 'hidden')
   
   const sb = document.getElementById('searchbar')
   sb.addEventListener('input', debounce(function(e) {
     activity.setAttribute('class', '')
     setTimeout(function() {
-      renderIds(idtable, data, e.target.value)
+      renderIds(idtable, data, filter, e.target.value)
+      activity.setAttribute('class', 'hidden')
+    })
+  }, 500))
+  filter.addEventListener('input', debounce(function(e) {
+    activity.setAttribute('class', '')
+    setTimeout(function() {
+      renderIds(idtable, data, filter, sb.value)
       activity.setAttribute('class', 'hidden')
     })
   }, 500))
 })
 
-function renderIds(div, data, filter) {
+function renderIds(div, data, claimedFilter, filter) {
+  const showClaimedOnly = claimedFilter.checked
   let t = []
   filter
-  for (let i = 1; i <= 242143; i++) {
-    if (filter && ''!==filter && !(''+i).includes(filter)) {
+  for (let i = 1; i <= 242; i++) {//143; i++) {
+    if (filter && !(''+i).includes(filter)) {
       continue;
     }
     if (data[i]) {
       t.push('<div class="taken">' + i + '</div>')
-    } else {
+    } else if (!showClaimedOnly) {
       t.push('<div>' + i + '</div>')
     }
     
