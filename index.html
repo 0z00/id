@@ -70,7 +70,7 @@ function renderIds(div, data, filter) {
   let t = []
   filter
   for (let i = 1; i <= 242143; i++) {
-    if (filter && !(''+i).includes(filter)) {
+    if (filter && ''!==filter && !(''+i).includes(filter)) {
       continue;
     }
     if (data[i]) {
